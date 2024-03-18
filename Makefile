@@ -10,4 +10,4 @@ deps:
 
 .PHONY: run
 run:
-	dune exec -w otmui
+	eval $$(opam env) && dune exec -w otmui
