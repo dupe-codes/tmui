@@ -1,4 +1,5 @@
 (executable
  (public_name otmui)
  (name otmui)
- (libraries tmui))
+ (libraries dream tmui)
+ (preprocess (pps lwt_ppx)))

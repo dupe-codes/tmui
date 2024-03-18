@@ -16,8 +16,8 @@
   (synopsis "The text message universal interface")
   (description "An aws lambda runtime environment and system for getting stuff done")
   (depends
-    (ocaml
-      (>= 5.1.0))
+    ocaml
+    dream
     (dune
       (and
         :build
