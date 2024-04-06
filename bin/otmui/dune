@@ -2,9 +2,10 @@
  (public_name otmui)
  (name otmui)
  (libraries dream tmui)
- (preprocess (pps lwt_ppx)))
+ (preprocess (pps lwt_ppx ppx_yojson_conv)))
 
+; TODO: figure out how to automatically create deps + targets for all eml files
 (rule
- (targets template.ml)
- (deps template.eml.html)
+ (targets template.ml error_template.ml form.ml)
+ (deps template.eml.html error_template.eml.html form.eml.html)
  (action (run dream_eml %{deps} --workspace %{workspace_root})))

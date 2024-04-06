@@ -14,10 +14,11 @@
 (package
   (name tmui)
   (synopsis "The text message universal interface")
-  (description "An aws lambda runtime environment and system for getting stuff done")
+  (description "An SMS based system for getting stuff done")
   (depends
     ocaml
     dream
+    ppx_yojson_conv
     (dune
       (and
         :build

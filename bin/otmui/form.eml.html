@@ -1,0 +1,16 @@
+let show_form ?message request =
+  <html>
+    <body>
+%    begin match message with
+%    | None -> ()
+%    | Some message ->
+      <p>You entered: <b><%s message %>!</b></p>
+%    end;
+
+      <form method="post" action="/">
+        <%s! Dream.csrf_tag request %>
+        <input name="message" autofocus>
+      </form>
+
+    </body>
+  </html>
