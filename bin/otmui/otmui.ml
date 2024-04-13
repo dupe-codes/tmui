@@ -14,20 +14,26 @@ let count_requests inner_handler request =
     failed := !failed + 1;
     raise exn
 
-(*NOTE: json*)
+(*NOTE: static*)
 
 let () =
-  Dream.run @@ Dream.logger @@ Dream.origin_referrer_check
-  @@ Dream.router
-       [
-         Dream.post "/" (fun request ->
-             let%lwt body = Dream.body request in
-             let message_object =
-               body |> Yojson.Safe.from_string |> message_object_of_yojson
-             in
-             `String message_object.message |> Yojson.Safe.to_string
-             |> Dream.json);
-       ]
+  Dream.run @@ Dream.logger
+  @@ Dream.router [ Dream.get "/static/**" (Dream.static ".") ]
+
+(*NOTE: json*)
+
+(*let () =*)
+(*Dream.run @@ Dream.logger @@ Dream.origin_referrer_check*)
+(*@@ Dream.router*)
+(*[*)
+(*Dream.post "/" (fun request ->*)
+(*let%lwt body = Dream.body request in*)
+(*let message_object =*)
+(*body |> Yojson.Safe.from_string |> message_object_of_yojson*)
+(*in*)
+(*`String message_object.message |> Yojson.Safe.to_string*)
+(*|> Dream.json);*)
+(*]*)
 
 (*NOTE: forms*)
 (*let () =*)

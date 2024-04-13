@@ -1,7 +1,14 @@
 .PHONY: setup
 setup: ## Create initial project setup
 	opam switch create . --no-install
-	opam install -y dune utop ocamlformat ocaml-lsp-server
+	opam install -y
+		dune \
+		utop \
+		ocamlformat \
+		ocaml-lsp-server \
+		odoc \
+		ocaml-manual \
+		odig
 
 .PHONY: deps
 deps: ## Install project dependencies
@@ -10,7 +17,21 @@ deps: ## Install project dependencies
 
 .PHONY: run
 run: ## Run the TMUI
-	eval $$(opam env) && dune exec -w otmui
+	opam switch && \
+	eval $$(opam env) && \
+	source $(CURDIR)/project.env && \
+	dune exec -w $$PROJECT_NAME
+
+.PHONY: docs
+docs: ## Generate & project documentation
+	dune build @doc && \
+	xdg-open _build/default/_doc/_html/index.html
+
+.PHONY: package-docs
+package-docs: ## Generate & open package documentation
+	opam switch && \
+	eval $$(opam env) && \
+	odig doc
 
 .PHONY: help
 help: ## Show this help

@@ -6,6 +6,6 @@
 
 ; TODO: figure out how to automatically create deps + targets for all eml files
 (rule
- (targets template.ml error_template.ml form.ml)
- (deps template.eml.html error_template.eml.html form.eml.html)
+ (targets template.ml error_template.ml form.ml upload.ml)
+ (deps template.eml.html error_template.eml.html form.eml.html upload.eml.html)
  (action (run dream_eml %{deps} --workspace %{workspace_root})))
