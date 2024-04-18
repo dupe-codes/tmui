@@ -1,3 +1,7 @@
+define OPAM_SETUP
+	opam switch && eval $$(opam env)
+endef
+
 .PHONY: setup
 setup: ## Create initial project setup
 	opam switch create . --no-install
@@ -12,13 +16,13 @@ setup: ## Create initial project setup
 
 .PHONY: deps
 deps: ## Install project dependencies
-	dune build
+	$(OPAM_SETUP) && \
+	dune build && \
 	opam install . -y --deps-only --with-test
 
 .PHONY: run
 run: ## Run the TMUI
-	opam switch && \
-	eval $$(opam env) && \
+	$(OPAM_SETUP) && \
 	source $(CURDIR)/project.env && \
 	dune exec -w $$PROJECT_NAME
 
@@ -29,8 +33,7 @@ docs: ## Generate & project documentation
 
 .PHONY: package-docs
 package-docs: ## Generate & open package documentation
-	opam switch && \
-	eval $$(opam env) && \
+	$(OPAM_SETUP) && \
 	odig doc
 
 .PHONY: help
