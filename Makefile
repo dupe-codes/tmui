@@ -2,6 +2,10 @@ define OPAM_SETUP
 	opam switch && eval $$(opam env)
 endef
 
+# ----------------- #
+# Development tasks #
+# ----------------- #
+
 .PHONY: setup
 setup: ## Create initial project setup
 	opam switch create . --no-install
@@ -26,6 +30,21 @@ run: ## Run the TMUI
 	source $(CURDIR)/project.env && \
 	dune exec -w $$PROJECT_NAME
 
+# ---------------- #
+# Deployment tasks #
+# ---------------- #
+
+.PHONY: build
+build: ## Build the project for deployment
+	opam switch create . --no-install
+	$(OPAM_SETUP) && \
+	opam install . -y --deps-only && \
+	dune build
+
+# ------------------- #
+# Docs & helper tasks #
+# ------------------- #
+
 .PHONY: docs
 docs: ## Generate & project documentation
 	dune build @doc && \
@@ -37,5 +56,5 @@ package-docs: ## Generate & open package documentation
 	odig doc
 
 .PHONY: help
-help: ## Show this help
+help: ## Show this help message
 	@grep -E '^[a-z.A-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
