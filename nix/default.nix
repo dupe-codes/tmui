@@ -18,12 +18,11 @@ pkgs.stdenv.mkDerivation {
   '';
 
   installPhase = ''
-    mkdir -p $out/bin
-    cp path/to/your/executable $out/bin/
+    mkdir -p $out/app
+    cp _build/install/default/bin/otmui $out/app/otmui
   '';
 
   meta = {
     description = "The Text Message Universal Interface";
-    maintainers = with pkgs.stdenv.lib.maintainers; [ pkgs.stdenv.lib.maintainers.example ];
   };
 }

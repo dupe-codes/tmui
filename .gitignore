@@ -1,3 +1,6 @@
 # ocaml/dune build artifacts
 _build/
 _opam/
+
+# deployment artifacts
+app/

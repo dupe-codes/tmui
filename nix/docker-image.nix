@@ -3,14 +3,17 @@
 # TODO: This is a WIP, not yet functional. Basically
 #       just a skeleton
 
+let
+  tmui-build = import ./default.nix { inherit pkgs; };
+in
 pkgs.dockerTools.buildImage {
   name = "tmui-server";
   tag = "latest";
 
   copyToRoot = pkgs.buildEnv {
     name = "image-root";
-    paths = [ pkgs.ocamlPackages.myocamlapp ];
-    pathsToLink = [ "/bin" ];
+    paths = [ tmui-build ];
+    pathsToLink = [ "/app" ];
   };
 
   runAsRoot = ''
@@ -19,7 +22,7 @@ pkgs.dockerTools.buildImage {
   '';
 
   config = {
-    Cmd = [ "/bin/tmui" ];
+    Cmd = [ "/app/otmui" ];
     WorkingDir = "/app";
     Volumes = { "/app/data" = {}; };
   };
