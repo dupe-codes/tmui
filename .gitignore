@@ -3,5 +3,5 @@ _build/
 _opam/
 
 # deployment artifacts
-app/
-images/
+app
+images

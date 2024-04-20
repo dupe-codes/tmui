@@ -2,10 +2,6 @@ define OPAM_SETUP
 	opam switch && eval $$(opam env)
 endef
 
-# ----------------- #
-# Development tasks #
-# ----------------- #
-
 .PHONY: setup
 setup: ## Create initial project setup
 	opam switch create . --no-install
@@ -30,10 +26,6 @@ run: ## Run the TMUI with live-reload
 	source $(CURDIR)/project.env && \
 	dune exec -w $$PROJECT_NAME
 
-# ---------------- #
-# Deployment tasks #
-# ---------------- #
-
 .PHONY: build
 build: ## Build the project for deployment
 	nix build ./nix/tmui-flake -o app \
@@ -44,10 +36,6 @@ build: ## Build the project for deployment
 docker-build: ## Build a docker image using Nix
 	mkdir -p images
 	nix-build nix/tmui-server-image.nix -o images/tmui-server
-
-# ------------------- #
-# Docs & helper tasks #
-# ------------------- #
 
 .PHONY: docs
 docs: ## Generate & open project documentation
