@@ -25,7 +25,7 @@ deps: ## Install project dependencies
 	opam install . -y --deps-only --with-test
 
 .PHONY: run
-run: ## Run the TMUI
+run: ## Run the TMUI with live-reload
 	$(OPAM_SETUP) && \
 	source $(CURDIR)/project.env && \
 	dune exec -w $$PROJECT_NAME
@@ -41,12 +41,16 @@ build: ## Build the project for deployment
 	opam install . -y --deps-only && \
 	dune build
 
+.PHONE: docker-build
+docker-build: ## Build a docker image using Nix
+	nix-build nix/docker-image.nix -o tmui-server
+
 # ------------------- #
 # Docs & helper tasks #
 # ------------------- #
 
 .PHONY: docs
-docs: ## Generate & project documentation
+docs: ## Generate & open project documentation
 	dune build @doc && \
 	xdg-open _build/default/_doc/_html/index.html
 

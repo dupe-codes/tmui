@@ -14,19 +14,26 @@ let count_requests inner_handler request =
     failed := !failed + 1;
     raise exn
 
-(*NOTE: static*)
-
+(* NOTE: simple hello world *)
 let () =
   Dream.run @@ Dream.logger
   @@ Dream.router
        [
-         Dream.get "/static/**" (Dream.static ".");
          Dream.get "hello" (fun _ -> Dream.html "Hello, world!");
          Dream.get "hello/:num" (fun request ->
              let num = Dream.param request "num" |> int_of_string in
              Dream.html
                (Printf.sprintf "<html><p>you sent the number %i </p></html>" num));
        ]
+
+(* NOTE: static*)
+
+(*let () =*)
+(*Dream.run @@ Dream.logger*)
+(*@@ Dream.router*)
+(*[*)
+(*Dream.get "/static/**" (Dream.static ".");*)
+(*]*)
 
 (*NOTE: json*)
 

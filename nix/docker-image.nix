@@ -4,7 +4,7 @@
 #       just a skeleton
 
 let
-  tmui-build = import ./default.nix { inherit pkgs; };
+  tmui-build = import ./tmui-server.nix { inherit pkgs; };
 in
 pkgs.dockerTools.buildImage {
   name = "tmui-server";
