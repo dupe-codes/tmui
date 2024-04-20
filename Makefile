@@ -36,14 +36,18 @@ run: ## Run the TMUI with live-reload
 
 .PHONY: build
 build: ## Build the project for deployment
+	opam init --disable-sandboxing -y --no-setup
 	opam switch create . --no-install
 	$(OPAM_SETUP) && \
 	opam install . -y --deps-only && \
 	dune build
+	mkdir -p app
+	cp _build/install/default/bin/otmui.exe ./app/tmui-server
 
 .PHONE: docker-build
 docker-build: ## Build a docker image using Nix
-	nix-build nix/docker-image.nix -o tmui-server
+	mkdir -p images
+	nix-build nix/tmui-server-image.nix -o images/tmui-server
 
 # ------------------- #
 # Docs & helper tasks #
