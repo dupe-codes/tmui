@@ -5,18 +5,26 @@
   inputs = {
     flake-utils.url = "github:numtide/flake-utils";
     nix-filter.url = "github:numtide/nix-filter";
+    nixpkgs.url = "github:NixOS/nixpkgs";
+
+    # include ocaml overlay for access to Dream and related packages
+    ocaml-overlay.url = "github:nix-ocaml/nix-overlays";
+    ocaml-overlay.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs = { self, nixpkgs, flake-utils, nix-filter }:
+  outputs = { self, nixpkgs, flake-utils, nix-filter, ocaml-overlay }:
     flake-utils.lib.eachDefaultSystem(system:
     let
-      legacyPackages = nixpkgs.legacyPackages.${system};
-      ocamlPackages = legacyPackages.ocamlPackages;
-      lib = legacyPackages.lib;
+      pkgs = import nixpkgs {
+        inherit system;
+        overlays = [ ocaml-overlay.overlays.default ];
+      };
+      ocamlPackages = pkgs.ocamlPackages;
+      lib = pkgs.lib;
       # filtered sources (prevents unecessary rebuilds)
       sources = {
         ocaml = nix-filter.lib {
-          root = ../.;
+          root = ../../.;
           include = [
             ".ocamlformat"
             "dune-project"
@@ -27,44 +35,49 @@
         };
 
         nix = nix-filter.lib {
-          root = ./.;
+          root = ../.;
           include = [
             (nix-filter.lib.matchExt "nix")
           ];
         };
       };
     in
+    {
       packages = {
         # The package that will be built or run by default. For example:
         #
         #     $ nix build
         #     $ nix run -- <args?>
         #
-        default = self.packages.${system}.tmui-server;
+        default = self.packages.${system}.tmui;
 
-        tmui-server = ocamlPackages.buildDunePackage {
-          pname = "tmui-server";
+        tmui = ocamlPackages.buildDunePackage {
+          pname = "tmui";
           version = "0.1.0";
-          duneVersion = "3.14.2";
+          duneVersion = "3";
           src = sources.ocaml;
+          root = ../../.;
 
           buildInputs = [
-              # Ocaml package dependencies needed to build go here.
+            ocamlPackages.dream
+            ocamlPackages.ppx_yojson_conv
           ];
 
           strictDeps = true;
 
           preBuild = ''
-            dune build tmui.opam
+            export PATH=$PATH:${ocamlPackages.dream}/bin
+            dune build
           '';
       };
 
+      # TODO: experiment with this for local development
       devShells = {
-        default = legacyPackages.mkShell {
+        default = pkgs.mkShell {
           packages = [
-            legacyPackages.nixpkgs-fmt    # source file formatting
-            legacyPackages.ocamlformat
-            legacyPackages.fswatch        # for `dune build --watch ...`
+            pkgs.nixpkgs-fmt              # source file formatting
+            ocamlPackages.ocamlformat
+            pkgs.fswatch                  # for `dune build --watch ...`
             ocamlPackages.odoc
             ocamlPackages.ocaml-lsp
             ocamlPackages.utop
@@ -72,10 +85,10 @@
 
           # tools from packages
           inputsFrom = [
-            self.packages.${system}.tmui-server
+            self.packages.${system}.tmui
           ];
         };
       };
     };
-  )
+  });
 }

@@ -2,18 +2,6 @@ open Ppx_yojson_conv_lib.Yojson_conv.Primitives
 
 type message_object = { message : string } [@@deriving yojson]
 
-let successful = ref 0
-let failed = ref 0
-
-let count_requests inner_handler request =
-  try%lwt
-    let%lwt response = inner_handler request in
-    successful := !successful + 1;
-    Lwt.return response
-  with exn ->
-    failed := !failed + 1;
-    raise exn
-
 (* NOTE: simple hello world *)
 let () =
   Dream.run @@ Dream.logger

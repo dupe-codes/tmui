@@ -36,13 +36,9 @@ run: ## Run the TMUI with live-reload
 
 .PHONY: build
 build: ## Build the project for deployment
-	opam init --disable-sandboxing -y --no-setup
-	opam switch create . --no-install
-	$(OPAM_SETUP) && \
-	opam install . -y --deps-only && \
-	dune build
-	mkdir -p app
-	cp _build/install/default/bin/otmui.exe ./app/tmui-server
+	nix build ./nix/tmui-flake -o app \
+		--extra-experimental-features "nix-command flakes" \
+		--option filter-syscalls false
 
 .PHONE: docker-build
 docker-build: ## Build a docker image using Nix
