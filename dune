@@ -1,3 +1,4 @@
+;TODO: create release profile
 (env
   (dev
     (flags
