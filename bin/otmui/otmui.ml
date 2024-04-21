@@ -4,7 +4,8 @@ type message_object = { message : string } [@@deriving yojson]
 
 (* NOTE: simple hello world *)
 let () =
-  Dream.run @@ Dream.logger
+  Dream.run ~interface:"0.0.0.0" ~port:8080
+  @@ Dream.logger
   @@ Dream.router
        [
          Dream.get "hello" (fun _ -> Dream.html "Hello, world!");

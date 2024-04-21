@@ -3,5 +3,4 @@ _build/
 _opam/
 
 # deployment artifacts
-app
-images
+result

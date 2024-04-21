@@ -4,6 +4,7 @@ endef
 
 .PHONY: setup
 setup: ## Create initial project setup
+	# TODO: install nix & opam first, if not already installed
 	opam switch create . --no-install
 	opam install -y
 		dune \
@@ -28,14 +29,9 @@ run: ## Run the TMUI with live-reload
 
 .PHONY: build
 build: ## Build the project for deployment
-	nix build ./nix/tmui-flake -o app \
+	nix build ./nix/tmui-flake \
 		--extra-experimental-features "nix-command flakes" \
 		--option filter-syscalls false
-
-.PHONE: docker-build
-docker-build: ## Build a docker image using Nix
-	mkdir -p images
-	nix-build nix/tmui-server-image.nix -o images/tmui-server
 
 .PHONY: docs
 docs: ## Generate & open project documentation
