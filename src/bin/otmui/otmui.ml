@@ -2,18 +2,58 @@ open Ppx_yojson_conv_lib.Yojson_conv.Primitives
 
 type message_object = { message : string } [@@deriving yojson]
 
-(* NOTE: simple hello world *)
+module type DB = Caqti_lwt.CONNECTION
+
+module T = Caqti_type
+
+(* NOTE: sql support *)
+let list_comments =
+  let query =
+    let open Caqti_request.Infix in
+    (T.unit ->* T.(tup2 int string)) "SELECT id, text FROM comment"
+  in
+  fun (module Db : DB) ->
+    let%lwt comments_or_error = Db.collect_list query () in
+    Caqti_lwt.or_fail comments_or_error
+
+let add_comment =
+  let query =
+    let open Caqti_request.Infix in
+    (T.string ->. T.unit) "INSERT INTO comment (text) VALUES ($1)"
+  in
+  fun text (module Db : DB) ->
+    let%lwt unit_or_error = Db.exec query text in
+    Caqti_lwt.or_fail unit_or_error
+
 let () =
-  Dream.run ~interface:"0.0.0.0" ~port:8080
-  @@ Dream.logger
+  Dream.run @@ Dream.logger
+  @@ Dream.sql_pool "sqlite3:db/db.sqlite"
+  @@ Dream.sql_sessions
   @@ Dream.router
        [
-         Dream.get "hello" (fun _ -> Dream.html "Hello, world!");
-         Dream.get "hello/:num" (fun request ->
-             let num = Dream.param request "num" |> int_of_string in
-             Dream.html
-               (Printf.sprintf "<html><p>you sent the number %i </p></html>" num));
+         Dream.get "/" (fun request ->
+             let%lwt comments = Dream.sql request list_comments in
+             Dream.html (Sql.render comments request));
+         Dream.post "/" (fun request ->
+             match%lwt Dream.form request with
+             | `Ok [ ("text", text) ] ->
+                 let%lwt () = Dream.sql request (add_comment text) in
+                 Dream.redirect request "/"
+             | _ -> Dream.empty `Bad_Request);
        ]
+
+(* NOTE: simple hello world *)
+(*let () =*)
+(*Dream.run ~interface:"0.0.0.0" ~port:8080*)
+(*@@ Dream.logger*)
+(*@@ Dream.router*)
+(*[*)
+(*Dream.get "hello" (fun _ -> Dream.html "Hello, world!");*)
+(*Dream.get "hello/:num" (fun request ->*)
+(*let num = Dream.param request "num" |> int_of_string in*)
+(*Dream.html*)
+(*(Printf.sprintf "<html><p>you sent the number %i </p></html>" num));*)
+(*]*)
 
 (* NOTE: static*)
 

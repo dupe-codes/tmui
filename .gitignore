@@ -4,3 +4,6 @@ _opam/
 
 # deployment artifacts
 result
+
+# learning/tutorial artifacts
+db.sqlite

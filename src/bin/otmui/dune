@@ -1,11 +1,11 @@
 (executable
  (public_name otmui)
  (name otmui)
- (libraries dream tmui)
+ (libraries dream caqti-driver-sqlite3 tmui)
  (preprocess (pps lwt_ppx ppx_yojson_conv)))
 
 ; TODO: figure out how to automatically create deps + targets for all eml files
 (rule
- (targets template.ml error_template.ml form.ml upload.ml)
- (deps template.eml.html error_template.eml.html form.eml.html upload.eml.html)
+ (targets template.ml error_template.ml form.ml upload.ml sql.ml)
+ (deps template.eml.html error_template.eml.html form.eml.html upload.eml.html sql.eml.html)
  (action (run dream_eml %{deps} --workspace %{workspace_root})))

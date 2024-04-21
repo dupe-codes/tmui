@@ -53,7 +53,7 @@
 
         tmui = ocamlPackages.buildDunePackage {
           pname = "tmui";
-          version = "0.1.0";
+          version = "0.1.0";              # TODO: manage this w/ git release tags?
           duneVersion = "3";
           src = sources.ocaml;
           root = ../../.;

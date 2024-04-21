@@ -17,15 +17,19 @@ setup: ## Create initial project setup
 
 .PHONY: deps
 deps: ## Install project dependencies
-	$(OPAM_SETUP) && \
-	dune build && \
-	opam install . -y --deps-only --with-test
+	-$(OPAM_SETUP) && dune build # dune build will fail; ignore it
+	$(OPAM_SETUP) && opam install . -y --deps-only --with-test
 
 .PHONY: run
 run: ## Run the TMUI with live-reload
 	$(OPAM_SETUP) && \
 	source $(CURDIR)/project.env && \
 	dune exec -w $$PROJECT_NAME
+
+.PHONY: test
+test: ## Run tests with live-reload
+	$(OPAM_SETUP) && \
+	dune runtest --watch
 
 .PHONY: build
 build: ## Build the project for deployment

@@ -19,6 +19,7 @@
     ocaml
     dream
     ppx_yojson_conv
+    caqti-driver-sqlite3
     (dune
       (and
         :build

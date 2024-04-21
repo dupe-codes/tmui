@@ -10,6 +10,7 @@ depends: [
   "ocaml"
   "dream"
   "ppx_yojson_conv"
+  "caqti-driver-sqlite3"
   "dune" {>= "3.10" & build & >= "3.11.1"}
   "alcotest" {with-test & >= "1.7.0"}
   "ppx_inline_alcotest" {with-test & >= "1.0.0"}
