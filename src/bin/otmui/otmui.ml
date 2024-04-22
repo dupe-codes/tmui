@@ -26,7 +26,8 @@ let add_comment =
     Caqti_lwt.or_fail unit_or_error
 
 let () =
-  Dream.run @@ Dream.logger
+  Dream.run ~interface:"0.0.0.0" ~port:8080
+  @@ Dream.logger
   @@ Dream.sql_pool "sqlite3:db/db.sqlite"
   @@ Dream.sql_sessions
   @@ Dream.router

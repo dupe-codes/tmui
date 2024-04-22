@@ -28,9 +28,7 @@
           include = [
             ".ocamlformat"
             "dune-project"
-            (nix-filter.lib.inDirectory "bin")
-            (nix-filter.lib.inDirectory "lib")
-            (nix-filter.lib.inDirectory "test")
+            (nix-filter.lib.inDirectory "src")
           ];
         };
 
@@ -61,13 +59,14 @@
           buildInputs = [
             ocamlPackages.dream
             ocamlPackages.ppx_yojson_conv
+            ocamlPackages.caqti-driver-sqlite3
           ];
 
           strictDeps = true;
 
           preBuild = ''
             export PATH=$PATH:${ocamlPackages.dream}/bin
-            dune build
+            dune build --profile=release
           '';
       };
 

@@ -20,4 +20,10 @@ WORKDIR /app
 # Copy /nix/store
 COPY --from=builder /tmp/nix-store-closure /nix/store
 COPY --from=builder /tmp/build/result /app
+
+# Copy db location
+# TODO: figure out a better way of setting up db (incl. running
+#       migrations)
+COPY --from=builder /tmp/build/db /app/db
+
 CMD ["/app/bin/otmui"]
